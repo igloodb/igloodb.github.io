@@ -3,7 +3,7 @@ export function EngineIllustration() {
     <div
       className="engine-illustration"
       role="img"
-      aria-label="SQL clients send queries to Igloo. DataFusion joins PostgreSQL and Parquet, with Arrow results stored in an in-memory cache."
+      aria-label="Developers and AI agents use MCP or JSON to query Igloo. DataFusion joins PostgreSQL and Parquet. Agent results are read-only, bounded JSON."
     >
       <svg viewBox="0 0 560 455" fill="none" aria-hidden="true">
         <defs>
@@ -78,7 +78,7 @@ export function EngineIllustration() {
             fontSize="13"
             fontFamily="monospace"
           >
-            your SQL client
+            agents + developers
           </text>
         </g>
         <rect x="188" y="137" width="184" height="171" rx="12" fill="#d3decf" />
@@ -193,7 +193,7 @@ export function EngineIllustration() {
         />
         <circle cx="424" cy="185" r="3" fill="#52864b" />
         <text x="435" y="189" fill="#32503c" fontSize="10" fontWeight="600">
-          Arrow cache
+          Agent results
         </text>
         <text
           x="422"
@@ -202,7 +202,7 @@ export function EngineIllustration() {
           fontSize="9.5"
           fontFamily="monospace"
         >
-          LRU + TTL
+          read-only JSON
         </text>
         <rect
           x="28"
@@ -244,7 +244,7 @@ export function EngineIllustration() {
           letterSpacing="1.6"
           fontFamily="monospace"
         >
-          ONE ENGINE. A CONNECTED PICTURE.
+          DISCOVER. EXPLAIN. QUERY.
         </text>
       </svg>
     </div>

@@ -17,7 +17,7 @@ import { GithubMark, IglooMark } from "../components/brand";
 import { EngineIllustration } from "../components/engine-illustration";
 import { Playground } from "../components/playground";
 import { CodeBlock } from "../components/code-block";
-import { REPOSITORY } from "../lib/site";
+import { REPOSITORY, AGENT_CHECKOUT } from "../lib/site";
 
 export default function Home() {
   return (
@@ -26,26 +26,25 @@ export default function Home() {
         <section className="hero">
           <div className="container hero-grid">
             <div className="hero-copy">
-              <Link className="release-note" href="/docs/roadmap/">
-                <span className="release-version">v0.1.0</span>
-                <span>A small engine. An open future.</span>
+              <Link className="release-note" href="/docs/agents/">
+                <span className="release-version">PREVIEW</span>
+                <span>Native MCP + JSON for AI agents</span>
                 <ChevronRight size={13} />
               </Link>
               <h1>
-                All your data.
+                Your data.
                 <br />
-                One SQL <span>engine.</span>
+                Ready for <span>agents.</span>
               </h1>
               <p>
-                Bring PostgreSQL and Parquet together.
-                <br className="desktop-break" /> Query with familiar SQL. Cache
-                results in Arrow.
-                <br className="desktop-break" /> Built in Rust, for a more
-                connected view.
+                Give your agent one SQL interface to PostgreSQL
+                <br className="desktop-break" /> and Parquet. Discover schemas,
+                inspect plans,
+                <br className="desktop-break" /> and query through native MCP or JSON.
               </p>
               <div className="hero-actions">
-                <Link className="button" href="/docs/quickstart/">
-                  Start building <ArrowUpRight size={17} />
+                <Link className="button" href="/docs/agents/">
+                  Connect your agent <ArrowUpRight size={17} />
                 </Link>
                 <a className="button secondary" href={REPOSITORY}>
                   <GithubMark size={18} />
@@ -62,7 +61,7 @@ export default function Home() {
             <EngineIllustration />
           </div>
           <div className="container hero-bottom">
-            <span>LESS FRAGMENTATION. MORE POSSIBILITIES.</span>
+            <span>YOUR SOURCES. SHARED CONTEXT. FAMILIAR SQL.</span>
             <a href="#features">
               Meet your query engine <ArrowDown size={14} />
             </a>
@@ -194,14 +193,14 @@ export default function Home() {
                     <em>igloo&gt;</em> SELECT …
                   </code>
                 </div>
-                <h3>Familiar tools, new context.</h3>
+                <h3>Built for agent workflows.</h3>
                 <p>
-                  A PostgreSQL wire endpoint for simple and prepared queries.
-                  DataFusion handles SQL, so you can stay close to your existing
-                  workflow.
+                  Native MCP and a JSON CLI for schema discovery, query plans,
+                  and bounded, read-only SQL. Keep PostgreSQL drivers for your
+                  existing development workflow.
                 </p>
-                <Link href="/docs/postgres/">
-                  Connect a SQL client <ArrowUpRight size={15} />
+                <Link href="/docs/agents/">
+                  Build with an agent <ArrowUpRight size={15} />
                 </Link>
               </article>
             </div>
@@ -231,10 +230,10 @@ export default function Home() {
               <article>
                 <span className="step-number">01</span>
                 <div>
-                  <h3>Connect your sources</h3>
+                  <h3>Discover the data</h3>
                   <p>
-                    Define PostgreSQL catalogs in TOML. Tables are discovered
-                    automatically, alongside a local Parquet-backed table.
+                    Connect PostgreSQL catalogs in TOML. Agents discover typed
+                    columns and qualified table names before writing a query.
                   </p>
                 </div>
                 <Database size={23} />
@@ -242,11 +241,11 @@ export default function Home() {
               <article>
                 <span className="step-number">02</span>
                 <div>
-                  <h3>Plan, push down, execute</h3>
+                  <h3>Inspect the plan</h3>
                   <p>
-                    DataFusion plans SQL and combines sources. Supported filters
-                    run closer to PostgreSQL; joins and remaining work run in
-                    the engine.
+                    Preview a DataFusion logical plan without executing the
+                    query. Inspect source scans, filters and joins before
+                    asking for results.
                   </p>
                 </div>
                 <Blocks size={23} />
@@ -254,10 +253,11 @@ export default function Home() {
               <article>
                 <span className="step-number">03</span>
                 <div>
-                  <h3>Cache results, respond to change</h3>
+                  <h3>Query with a budget</h3>
                   <p>
-                    Reuse Arrow batches for eligible queries. The background
-                    listener polls for JSON events and invalidates the cache.
+                    Run read-only SQL with row, time and response limits.
+                    Agent queries bypass the cache and report truncation;
+                    independent sources have no shared snapshot.
                   </p>
                 </div>
                 <RefreshCw size={23} />
@@ -269,29 +269,29 @@ export default function Home() {
           <div className="container quickstart-grid">
             <div>
               <p className="eyebrow">
-                <span className="tiny-cross">+</span> FROM SOURCE TO SQL
+                <span className="tiny-cross">+</span> FROM CHECKOUT TO CONTEXT
               </p>
               <h2>
-                Give your curiosity
-                <br />a query engine.
+                Your first query.
+                <br />No database setup.
               </h2>
               <p>
-                Start with the self-contained market analytics demo.
+                Start with the in-memory agent demo.
                 <br className="desktop-break" />
-                No database setup. Just Rust and a little curiosity.
+                No credentials, configuration, or model API key.
               </p>
-              <Link className="text-link" href="/docs/quickstart/">
-                Read the full quickstart <ArrowRight size={16} />
+              <Link className="text-link" href="/docs/agents/">
+                Read the agent quickstart <ArrowRight size={16} />
               </Link>
               <span className="requirements">
                 <Terminal size={14} />
-                Requires Rust 1.88+ · first build compiles DataFusion
+                Rust 1.88+ · experimental source preview
               </span>
             </div>
             <CodeBlock
               title="Your terminal"
               code={
-                "git clone https://github.com/igloodb/igloodb.git\ncd igloodb\ncargo run --locked -- crypto-demo"
+                AGENT_CHECKOUT + "\ncargo build --locked\n./target/debug/igloo query --demo \\\n  --sql 'SELECT count(*) AS total FROM sample_events'"
               }
             />
           </div>
@@ -333,7 +333,7 @@ export default function Home() {
                   </li>
                   <li>
                     <Check size={16} />
-                    PostgreSQL wire protocol
+                    Native MCP + JSON agent commands
                   </li>
                   <li>
                     <Check size={16} />
@@ -348,8 +348,8 @@ export default function Home() {
                 </span>
                 <h3>A bigger horizon.</h3>
                 <p>
-                  Real CDC streams. Dependency-aware caching. Iceberg tables.
-                  More connectors. Distributed execution.
+                  Configurable Parquet schemas. Source cancellation and memory
+                  budgets. Agent evaluations. Real CDC and cache freshness.
                 </p>
                 <Link href="/docs/roadmap/">
                   See the project roadmap <ArrowUpRight size={16} />
@@ -379,12 +379,12 @@ export default function Home() {
             <div className="closing-brand">
               <IglooMark />
               <div>
-                <h2>Bring your data together.</h2>
-                <p>Start small. Query something interesting.</p>
+                <h2>Give your agent the data context.</h2>
+                <p>Discover. Explain. Query. Keep the SQL in view.</p>
               </div>
             </div>
-            <Link className="button" href="/docs/quickstart/">
-              Get started with Igloo <ArrowUpRight size={17} />
+            <Link className="button" href="/docs/agents/">
+              Build with an agent <ArrowUpRight size={17} />
             </Link>
           </div>
         </section>

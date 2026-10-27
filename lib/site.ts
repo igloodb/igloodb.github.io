@@ -1,6 +1,9 @@
 export const REPOSITORY = "https://github.com/igloodb/igloodb";
 export const SITE_URL = "https://igloodb.github.io";
 export const SOURCE_COMMIT = "163320482d98bc3d6c49eb85acb0f511461a8284";
+export const AGENT_SOURCE_COMMIT = "cf85d08f435454f4e7a564c5d73ff48c4524b878";
+export const AGENT_SOURCE_URL = REPOSITORY + "/blob/" + AGENT_SOURCE_COMMIT;
+export const AGENT_CHECKOUT = "git clone --branch codex/agent-native-access https://github.com/igloodb/igloodb.git\ncd igloodb\ngit checkout --detach " + AGENT_SOURCE_COMMIT;
 export const source = (path: string) =>
   REPOSITORY + "/blob/" + SOURCE_COMMIT + "/" + path;
 

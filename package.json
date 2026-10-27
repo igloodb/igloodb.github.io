@@ -2,11 +2,12 @@
   "name": "igloodb-website",
   "version": "1.0.0",
   "private": true,
-  "description": "The Igloo SQL engine website and documentation",
+  "description": "Igloo SQL federation for developers and AI agents — website and documentation",
   "packageManager": "pnpm@8.15.9",
   "scripts": {
     "dev": "next dev",
-    "build": "next build --webpack",
+    "build": "node scripts/generate-agent-docs.mjs && next build --webpack",
+    "docs:generate": "node scripts/generate-agent-docs.mjs",
     "typecheck": "tsc --noEmit",
     "check": "node scripts/check-export.mjs",
     "test:e2e": "playwright test"

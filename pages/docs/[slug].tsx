@@ -77,6 +77,10 @@ export default function Documentation({ doc }: { doc: Doc }) {
             <p className="eyebrow">{doc.group}</p>
             <h1>{doc.title}</h1>
             <p>{doc.description}</p>
+            <p className="doc-text-links">
+              <a href={"/docs/" + doc.slug + ".md"}>Read as Markdown</a>
+              {doc.slug === "agents" && <> · <a href="/skills/igloo-query/SKILL.md">Agent skill</a> · <a href="/llms.txt">llms.txt</a></>}
+            </p>
           </div>
           {doc.sections.map((section) => (
             <section id={section.id} key={section.id} className="doc-section">
@@ -143,9 +147,9 @@ export default function Documentation({ doc }: { doc: Doc }) {
             <p>
               Grounded in the engine source at{" "}
               <a href={doc.source}>
-                1633204 <ArrowUpRight size={11} />
+                {doc.sourceLabel || "1633204"} <ArrowUpRight size={11} />
               </a>
-              . Check the repository for subsequent changes.
+              . {doc.sourceLabel ? "The quickstart pins this experimental source revision; it is not a tagged release." : "Check the repository for subsequent changes."}
             </p>
             <a href="https://github.com/igloodb/igloodb.github.io/issues/new">
               Suggest an improvement <ArrowUpRight size={13} />

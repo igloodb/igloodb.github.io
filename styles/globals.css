@@ -1346,10 +1346,20 @@ a:hover {
   font-size: 40px;
   letter-spacing: -1.8px;
 }
-.doc-title > p:last-child {
+.doc-title > p:not(.eyebrow):not(.doc-text-links) {
   font-size: 15px;
   line-height: 1.8;
   margin-top: 13px;
+}
+.doc-title .doc-text-links {
+  font-size: 12px;
+  line-height: 1.8;
+  margin-top: 12px;
+  color: var(--green);
+}
+.doc-text-links a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .doc-section {
   margin-block: 36px;
@@ -1989,7 +1999,7 @@ a:hover {
   .doc-title h1 {
     font-size: 32px;
   }
-  .doc-title > p:last-child {
+  .doc-title > p:not(.eyebrow):not(.doc-text-links) {
     font-size: 13px;
   }
   .doc-section h2 {
@@ -2564,7 +2574,7 @@ a:hover {
   .doc-title h1 {
     font-size: 36px;
   }
-  .doc-title > p:last-child {
+  .doc-title > p:not(.eyebrow):not(.doc-text-links) {
     font-size: 14px;
     margin-top: 15px;
   }
