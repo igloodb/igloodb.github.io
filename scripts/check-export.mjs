@@ -69,11 +69,28 @@ for (const required of [
   "robots.txt",
   "sitemap.xml",
   "social-card.png",
+  "llms.txt",
+  "deployment.json",
+  "llms-full.txt",
+  "docs/agents.md",
+  "skills/igloo-query/SKILL.md",
 ]) {
   try {
     await access(path.join(root, required));
   } catch {
     problems.push("Missing " + required);
+  }
+}
+// Agent discovery must resolve within the static export, including text assets.
+for (const name of ["llms.txt", "llms-full.txt"]) {
+  const content = await readFile(path.join(root, name), "utf8");
+  for (const match of content.matchAll(/https:\/\/igloodb\.github\.io(\/[^\s)]+)/g)) {
+    const target = path.join(root, match[1]);
+    try {
+      await access(match[1].endsWith("/") ? path.join(target, "index.html") : target);
+    } catch {
+      problems.push(name + ": broken discovery link " + match[0]);
+    }
   }
 }
 if (problems.length) {

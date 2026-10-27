@@ -144,7 +144,7 @@ function Header() {
         </Link>
         <nav className="desktop-nav" aria-label="Main navigation">
           <Link href="/#features">Why Igloo</Link>
-          <Link href="/#how-it-works">How it works</Link>
+          <Link href="/docs/agents/">For AI agents</Link>
           <Link
             href="/docs/quickstart/"
             aria-current={
@@ -184,6 +184,7 @@ function Header() {
           >
             <Link href="/#features">Why Igloo</Link>
             <Link href="/#how-it-works">How it works</Link>
+            <Link href="/docs/agents/">For AI agents</Link>
             <Link href="/docs/quickstart/">Documentation</Link>
             <Link href="/docs/roadmap/">Roadmap</Link>
             <a href={REPOSITORY}>
@@ -207,9 +208,9 @@ function Footer() {
             </span>
           </Link>
           <p>
-            A little engine for a bigger
+            SQL context for developers
             <br />
-            picture of your data.
+            and their AI agents.
           </p>
         </div>
         <div className="footer-links">
@@ -222,6 +223,7 @@ function Footer() {
           <div>
             <h3>Build</h3>
             <Link href="/docs/quickstart/">Quickstart</Link>
+            <Link href="/docs/agents/">Agent guide</Link>
             <Link href="/docs/configuration/">Configuration</Link>
             <Link href="/docs/sql/">SQL reference</Link>
           </div>
@@ -232,6 +234,7 @@ function Footer() {
             </a>
             <Link href="/docs/contributing/">Contribute</Link>
             <Link href="/docs/roadmap/">Roadmap</Link>
+            <a href="/llms.txt">llms.txt</a>
           </div>
         </div>
       </div>
@@ -261,10 +264,10 @@ export function Layout({
 }) {
   const fullTitle = title
     ? title + " — Igloo"
-    : "Igloo — All your data. One SQL engine.";
+    : "Igloo — SQL context for developers and AI agents.";
   const summary =
     description ||
-    "An experimental SQL engine built in Rust. Query PostgreSQL and Parquet together with Apache DataFusion, Arrow-native caching, and a PostgreSQL-compatible endpoint.";
+    "Give your AI agent one SQL interface to PostgreSQL and Parquet. Native MCP, a read-only JSON CLI, typed schema discovery, and query plans. Experimental, open source, built in Rust.";
   return (
     <>
       <Head>
@@ -274,6 +277,7 @@ export function Layout({
         <meta name="theme-color" content="#f6f8f5" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="canonical" href={SITE_URL + path} />
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="Agent documentation index" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Igloo" />
         <meta property="og:title" content={fullTitle} />

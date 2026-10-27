@@ -1,4 +1,5 @@
 import { source } from "./site";
+import { agentDoc } from "./agent-doc";
 export type DocSection = {
   id: string;
   title: string;
@@ -14,6 +15,7 @@ export type Doc = {
   group: string;
   description: string;
   source: string;
+  sourceLabel?: string;
   sections: DocSection[];
 };
 export const docs: Doc[] = [
@@ -30,6 +32,7 @@ export const docs: Doc[] = [
         body: [
           "Igloo is an experimental, single-node SQL query engine. It runs SQL with Apache DataFusion and represents results as Apache Arrow record batches. The source currently requires Rust 1.88 or later and a linker/toolchain for your operating system.",
           "The fastest way to explore the engine is crypto-demo. It generates deterministic sample market data and runs a suite of analytical queries. No PostgreSQL server, configuration file, or ADBC driver is needed for this mode.",
+          "For coding agents, the separate Build with AI agents guide covers native MCP, JSON commands and an in-memory demo in the agent interface update. That update may not yet be in a published release.",
         ],
       },
       {
@@ -66,6 +69,7 @@ export const docs: Doc[] = [
       },
     ],
   },
+  agentDoc,
   {
     slug: "postgres",
     title: "Connect PostgreSQL",

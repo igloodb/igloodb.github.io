@@ -4,3 +4,9 @@ out
 *.tsbuildinfo
 playwright-report
 test-results
+# Text documentation generated from lib/docs.ts during build.
+public/docs/
+public/skills/
+public/llms.txt
+public/llms-full.txt
+public/deployment.json

@@ -17,6 +17,7 @@ async function expectAccessible(page: Page) {
 
 const slugs = [
   "quickstart",
+  "agents",
   "postgres",
   "configuration",
   "architecture",
@@ -33,12 +34,12 @@ test("homepage explains the implemented engine, loads cleanly, and meets accessi
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "All your data.One SQL engine.",
+    "Your data.Ready for agents.",
   );
   await expect(page.getByText("Experimental, by design")).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Start building" }),
-  ).toHaveAttribute("href", "/docs/quickstart/");
+    page.getByRole("link", { name: "Connect your agent" }),
+  ).toHaveAttribute("href", "/docs/agents/");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -114,7 +115,7 @@ for (const slug of slugs) {
       const response = await page.goto("/docs/" + slug + "/");
       expect(response?.status()).toBe(200);
       await expect(page.locator("h1")).toBeVisible();
-      await expect(page.locator(".doc-provenance")).toContainText("1633204");
+      await expect(page.locator(".doc-provenance")).toContainText(slug === "agents" ? "unreleased" : "1633204");
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -141,6 +142,28 @@ test("copy buttons copy the actual command", async ({
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
     "cargo run --locked -- crypto-demo",
   );
+});
+
+test("agents can discover the same documentation and skill without rendering JavaScript", async ({ request }) => {
+  const index = await request.get("/llms.txt");
+  expect(index.ok()).toBe(true);
+  expect(await index.text()).toContain("https://igloodb.github.io/docs/agents.md");
+  const guide = await request.get("/docs/agents.md");
+  expect(guide.ok()).toBe(true);
+  const text = await guide.text();
+  expect(text).toContain("igloo_schema");
+  expect(text).toContain("[mcp_servers.igloo]");
+  expect(text).toContain("exact decimal strings");
+  expect(text).toContain("git clone --branch codex/agent-native-access");
+  const deployment = await request.get("/deployment.json");
+  expect(deployment.ok()).toBe(true);
+  expect(text).toContain((await deployment.json()).agent_source_commit);
+  const full = await request.get("/llms-full.txt");
+  expect(full.ok()).toBe(true);
+  expect(await full.text()).toContain(text);
+  const skill = await request.get("/skills/igloo-query/SKILL.md");
+  expect(skill.ok()).toBe(true);
+  expect(await skill.text()).toContain("name: igloo-query");
 });
 
 test("mobile menu and documentation selector navigate, and missing pages recover", async ({
