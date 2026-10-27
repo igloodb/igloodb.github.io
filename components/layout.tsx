@@ -145,7 +145,7 @@ function Header() {
         <nav className="desktop-nav" aria-label="Main navigation">
           <Link href="/#features">Why Igloo</Link>
           <Link href="/docs/connectors/">Connectors</Link>
-          <Link href="/docs/agents/">For AI agents</Link>
+          <Link href="/#how-it-works">How it works</Link>
           <Link
             href="/docs/quickstart/"
             aria-current={
@@ -210,9 +210,9 @@ function Footer() {
             </span>
           </Link>
           <p>
-            SQL context for developers
+            A little engine for a bigger
             <br />
-            and their AI agents.
+            picture of your data.
           </p>
         </div>
         <div className="footer-links">
@@ -267,10 +267,10 @@ export function Layout({
 }) {
   const fullTitle = title
     ? title + " — Igloo"
-    : "Igloo — SQL context for developers and AI agents.";
+    : "Igloo — All your data. One SQL engine.";
   const summary =
     description ||
-    "One SQL interface across your databases. Native PostgreSQL, compatible ADBC drivers, and Parquet snapshots for AI agents and developers. MCP, JSON, and typed discovery. Experimental and open source.";
+    "An experimental SQL engine built in Rust. Query PostgreSQL and Parquet together with DataFusion and Arrow-native caching. Explore MCP, JSON, and ADBC in the source preview.";
   return (
     <>
       <Head>

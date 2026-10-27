@@ -21,7 +21,8 @@ for (let attempt = 1; attempt <= 12; attempt++) {
     const [home, guide, index, skill, connectors] = await Promise.all([
       read(""), read("docs/agents.md"), read("llms.txt"), read("skills/igloo-query/SKILL.md"), read("docs/connectors.md"),
     ]);
-    assert(home.includes("Ready for") && home.includes("agents."), "Homepage must explain agent access");
+    assert(home.includes("All your data.") && home.includes("One SQL"), "Homepage must retain the SQL product introduction");
+    assert(home.includes("MCP") && home.includes("ADBC"), "Homepage must include the new source-preview features");
     assert(guide.includes("git clone --branch codex/agent-native-access"), "Agent guide must include a working source checkout");
     assert(guide.includes(deployment.agent_source_commit), "Agent guide must pin its source revision");
     assert(index.includes("https://igloodb.github.io/docs/agents.md"), "llms.txt must link to the agent guide");
