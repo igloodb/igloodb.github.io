@@ -1,0 +1,173 @@
+import { test, expect, type Page } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+async function expectAccessible(page: Page) {
+  const result = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(
+    result.violations.map((violation) => ({
+      id: violation.id,
+      nodes: violation.nodes.map((node) => ({
+        target: node.target,
+        summary: node.failureSummary,
+      })),
+    })),
+  ).toEqual([]);
+}
+
+const slugs = [
+  "quickstart",
+  "postgres",
+  "configuration",
+  "architecture",
+  "caching",
+  "sql",
+  "roadmap",
+  "contributing",
+];
+
+test("homepage explains the implemented engine, loads cleanly, and meets accessibility checks", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "All your data.One SQL engine.",
+  );
+  await expect(page.getByText("Experimental, by design")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Start building" }),
+  ).toHaveAttribute("href", "/docs/quickstart/");
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await expectAccessible(page);
+  expect(errors).toEqual([]);
+});
+
+test("query examples demonstrate hits, whole-cache invalidation, and keyboard tabs", async ({
+  page,
+}) => {
+  await page.goto("/#playground");
+  const status = page.locator(".result-message");
+  await page.getByRole("button", { name: "Run sample" }).click();
+  await expect(status).toContainText("Cache miss → execute → store");
+  await page.getByRole("button", { name: "Run sample" }).click();
+  await expect(status).toContainText("Cache hit → return saved batches");
+  await page.getByRole("tab", { name: "Postgres + Parquet" }).click();
+  await page.getByRole("button", { name: "Run sample" }).click();
+  await expect(status).toContainText("Cache miss");
+  await page.getByRole("button", { name: "Simulate CDC event" }).click();
+  await expect(status).toContainText("All samples are invalidated");
+  await page.getByRole("tab", { name: "Join across sources" }).click();
+  await page.getByRole("button", { name: "Run sample" }).click();
+  await expect(status).toContainText("Cache miss");
+  await page.getByRole("tab", { name: "Join across sources" }).focus();
+  await page.keyboard.press("End");
+  await expect(
+    page.getByRole("tab", { name: "Market analytics" }),
+  ).toBeFocused();
+  await expect(page.locator(".editor-code")).toContainText(
+    "SUM(close * volume)",
+  );
+  await expect(
+    page.getByRole("cell", { name: "BTC", exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press("Home");
+  await expect(
+    page.getByRole("tab", { name: "Join across sources" }),
+  ).toBeFocused();
+});
+
+test("documentation search finds content, handles empty results, and closes accessibly", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const trigger = page.getByRole("button", { name: "Search documentation" });
+  await trigger.click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  const input = page.getByRole("textbox", { name: "Search documentation" });
+  await expect(input).toBeFocused();
+  await input.fill("no-such-igloo-page");
+  await expect(dialog).toContainText("No matching pages");
+  await input.fill("cache");
+  await expectAccessible(page);
+  await dialog.getByRole("link", { name: "Caching & freshness" }).click();
+  await expect(page).toHaveURL(/\/docs\/caching\/$/);
+  await expect(dialog).not.toBeVisible();
+  await page.keyboard.press("Control+k");
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+});
+
+for (const slug of slugs) {
+  test(
+    "documentation " +
+      slug +
+      " supports direct navigation and accessible content",
+    async ({ page }) => {
+      const response = await page.goto("/docs/" + slug + "/");
+      expect(response?.status()).toBe(200);
+      await expect(page.locator("h1")).toBeVisible();
+      await expect(page.locator(".doc-provenance")).toContainText("1633204");
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+      ).toBe(true);
+      await expectAccessible(page);
+    },
+  );
+}
+
+test("copy buttons copy the actual command", async ({
+  page,
+  context,
+  browserName,
+}) => {
+  test.skip(
+    browserName !== "chromium",
+    "Clipboard permission is browser-specific",
+  );
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/docs/quickstart/");
+  await page.getByRole("button", { name: "Copy code" }).first().click();
+  await expect(page.getByRole("button", { name: "Copied" })).toBeVisible();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
+    "cargo run --locked -- crypto-demo",
+  );
+});
+
+test("mobile menu and documentation selector navigate, and missing pages recover", async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto("/");
+  if (isMobile) {
+    await page.getByRole("button", { name: "Open navigation" }).click();
+    await expect(
+      page.getByRole("button", { name: "Close navigation" }),
+    ).toHaveAttribute("aria-expanded", "true");
+    await page
+      .getByRole("navigation", { name: "Mobile navigation" })
+      .getByRole("link", { name: "Documentation" })
+      .click();
+    await page.getByText("Browse documentation", { exact: true }).click();
+    await page
+      .getByRole("navigation", { name: "Documentation pages" })
+      .getByRole("link", { name: "Architecture", exact: true })
+      .click();
+    await expect(page.locator("h1")).toHaveText("Architecture");
+  }
+  await page.goto("/missing-page/");
+  await expect(
+    page.getByRole("heading", { name: "This query came up empty." }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "Back to Igloo" }).click();
+  await expect(page).toHaveURL("/");
+});
