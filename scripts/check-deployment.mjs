@@ -18,15 +18,17 @@ for (let attempt = 1; attempt <= 12; attempt++) {
   try {
     const deployment = JSON.parse(await read("deployment.json"));
     assert.equal(deployment.site_commit, expected, "Pages must serve the deployed commit");
-    const [home, guide, index, skill] = await Promise.all([
-      read(""), read("docs/agents.md"), read("llms.txt"), read("skills/igloo-query/SKILL.md"),
+    const [home, guide, index, skill, connectors] = await Promise.all([
+      read(""), read("docs/agents.md"), read("llms.txt"), read("skills/igloo-query/SKILL.md"), read("docs/connectors.md"),
     ]);
     assert(home.includes("Ready for") && home.includes("agents."), "Homepage must explain agent access");
     assert(guide.includes("git clone --branch codex/agent-native-access"), "Agent guide must include a working source checkout");
     assert(guide.includes(deployment.agent_source_commit), "Agent guide must pin its source revision");
     assert(index.includes("https://igloodb.github.io/docs/agents.md"), "llms.txt must link to the agent guide");
     assert(skill.includes("name: igloo-query"), "Published skill must be discoverable");
-    console.log(`Verified ${site.href} at ${expected}: homepage, pinned agent guide, llms.txt, and query skill.`);
+    assert(connectors.includes("Database-specific validation pending") && connectors.includes("igloo_connectors"), "Connector guide must distinguish evidence from candidate coverage");
+    assert(connectors.includes(deployment.agent_source_commit), "Connector guide must pin its source revision");
+    console.log(`Verified ${site.href} at ${expected}: homepage, pinned agent and connector guides, llms.txt, and query skill.`);
     process.exit(0);
   } catch (error) {
     lastError = error;

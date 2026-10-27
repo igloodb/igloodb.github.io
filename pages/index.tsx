@@ -37,10 +37,9 @@ export default function Home() {
                 Ready for <span>agents.</span>
               </h1>
               <p>
-                Give your agent one SQL interface to PostgreSQL
-                <br className="desktop-break" /> and Parquet. Discover schemas,
-                inspect plans,
-                <br className="desktop-break" /> and query through native MCP or JSON.
+                One SQL interface across your databases.
+                <br className="desktop-break" /> Native PostgreSQL, compatible ADBC drivers,
+                <br className="desktop-break" /> and open Parquet snapshots. Ready for MCP and JSON.
               </p>
               <div className="hero-actions">
                 <Link className="button" href="/docs/agents/">
@@ -88,7 +87,7 @@ export default function Home() {
             </div>
             <div className="technology">
               <Database size={22} />
-              <span>PostgreSQL</span>
+              <span>ADBC drivers</span>
             </div>
             <div className="technology">
               <Layers3 size={22} />
@@ -134,12 +133,12 @@ export default function Home() {
                 </div>
                 <h3>Your sources, one query.</h3>
                 <p>
-                  Join multiple PostgreSQL databases and local Parquet datasets.
-                  Name a source, discover its tables, and start asking
-                  questions.
+                  Join native PostgreSQL, compatible ADBC sources, and named
+                  Parquet snapshots through DataFusion. Discover typed tables
+                  before asking a question.
                 </p>
-                <Link href="/docs/configuration/">
-                  Explore federation <ArrowUpRight size={15} />
+                <Link href="/docs/connectors/">
+                  Explore database coverage <ArrowUpRight size={15} />
                 </Link>
               </article>
               <article className="feature-card">
@@ -232,7 +231,7 @@ export default function Home() {
                 <div>
                   <h3>Discover the data</h3>
                   <p>
-                    Connect PostgreSQL catalogs in TOML. Agents discover typed
+                    Configure native, ADBC or Parquet catalogs. Agents discover typed
                     columns and qualified table names before writing a query.
                   </p>
                 </div>
@@ -348,8 +347,8 @@ export default function Home() {
                 </span>
                 <h3>A bigger horizon.</h3>
                 <p>
-                  Configurable Parquet schemas. Source cancellation and memory
-                  budgets. Agent evaluations. Real CDC and cache freshness.
+                  More verified drivers. Real Iceberg catalogs. Replication/CDC
+                  interoperability. Source cancellation and memory budgets.
                 </p>
                 <Link href="/docs/roadmap/">
                   See the project roadmap <ArrowUpRight size={16} />

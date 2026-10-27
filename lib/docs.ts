@@ -1,11 +1,13 @@
-import { source } from "./site";
+import { source, AGENT_SOURCE_URL, AGENT_SOURCE_COMMIT } from "./site";
 import { agentDoc } from "./agent-doc";
+import { connectorDoc } from "./connector-doc";
 export type DocSection = {
   id: string;
   title: string;
   body: string[];
   code?: { title: string; language?: string; code: string };
   list?: string[];
+  links?: { label: string; href: string }[];
   table?: { headings: string[]; rows: string[][] };
   note?: string;
 };
@@ -70,13 +72,15 @@ export const docs: Doc[] = [
     ],
   },
   agentDoc,
+  connectorDoc,
   {
     slug: "postgres",
     title: "Connect PostgreSQL",
     group: "Start here",
     description:
       "Configure live sources and query them through the PostgreSQL wire protocol.",
-    source: source("src/server.rs"),
+    source: AGENT_SOURCE_URL + "/src/server.rs",
+    sourceLabel: "connector preview " + AGENT_SOURCE_COMMIT.slice(0, 7) + " (unreleased)",
     sections: [
       {
         id: "prepare-data",
@@ -94,13 +98,13 @@ export const docs: Doc[] = [
         id: "configuration",
         title: "Configure the engine",
         body: [
-          "In the engine repository root, save the following as igloo.toml. Create the two directories before starting. The parquet_path directory must exist. It may be empty when you only query PostgreSQL.",
-          "The legacy table named iceberg reads local .parquet files with user_id: Int64 (non-null) and data: Utf8. Keep the OHLCV demo directory separate because its schema differs.",
+          "Save the following as igloo.toml. In the connector preview, native PostgreSQL does not require dummy Parquet or CDC directories. If you add the optional legacy parquet_path, that directory must exist.",
+          "When configured, the legacy iceberg table reads .parquet files with user_id: Int64 (non-null) and data: Utf8. Named parquet_sources infer general schemas; see Database connectors. Keep the OHLCV demo separate from the legacy path.",
         ],
         code: {
           title: "igloo.toml",
           language: "toml",
-          code: 'parquet_path = "./local_parquet/"\ncdc_path = "./local_cdc/"\nlisten_addr = "127.0.0.1:5442"\n\n[[sources]]\nname = "app"\nschemas = ["public"]\n# Supply the URI with IGLOO_SOURCE_APP_URI.',
+          code: 'listen_addr = "127.0.0.1:5442"\n\n[[sources]]\nname = "app"\nschemas = ["public"]\n# Supply the URI with IGLOO_SOURCE_APP_URI.',
         },
       },
       {
@@ -111,7 +115,7 @@ export const docs: Doc[] = [
         ],
         code: {
           title: "Terminal · from the engine checkout",
-          code: "mkdir -p local_parquet local_cdc\nexport IGLOO_SOURCE_APP_URI='postgres://USER:PASSWORD@localhost:5432/DATABASE'\ncargo run --locked -- serve",
+          code: "export IGLOO_SOURCE_APP_URI='postgres://USER:PASSWORD@localhost:5432/DATABASE'\ncargo run --locked -- serve",
         },
         note: "The current server has no authentication or TLS. Keep listen_addr on localhost or a trusted, isolated development network. Authentication and TLS are roadmap work.",
       },
@@ -135,13 +139,14 @@ export const docs: Doc[] = [
     group: "Build with Igloo",
     description:
       "Sources, catalogs, environment overrides, and cache settings.",
-    source: source("igloo.example.toml"),
+    source: AGENT_SOURCE_URL + "/igloo.example.toml",
+    sourceLabel: "connector preview " + AGENT_SOURCE_COMMIT.slice(0, 7) + " (unreleased)",
     sections: [
       {
         id: "loading",
         title: "Configuration loading",
         body: [
-          "Igloo reads ./igloo.toml when present. Set IGLOO_CONFIG to use another file. Environment variables override file values. Required paths and sources are validated at startup; there are no silent localhost defaults.",
+          "Igloo reads ./igloo.toml when present. Set IGLOO_CONFIG to use another file. Environment variables override file values. Source configuration and explicitly supplied paths are validated at startup; there are no silent localhost defaults. The connector preview makes legacy parquet_path and cdc_path optional for server and agent commands.",
           "The environment is read directly. A .env file is not automatically loaded by the engine; export its variables using your shell or a dotenv tool.",
         ],
       },
@@ -154,7 +159,7 @@ export const docs: Doc[] = [
         code: {
           title: "igloo.toml",
           language: "toml",
-          code: 'parquet_path = "./local_parquet/"\ncdc_path = "./local_cdc/"\nlisten_addr = "127.0.0.1:5442"\n\n[[sources]]\nname = "orders_db"\nschemas = ["public", "billing"]\ntables = ["orders", "customers"]\n\n[[sources]]\nname = "crm"\nschemas = ["public"]',
+          code: 'listen_addr = "127.0.0.1:5442"\n\n[[sources]]\nname = "orders_db"\nschemas = ["public", "billing"]\ntables = ["orders", "customers"]\n\n[[sources]]\nname = "crm"\nschemas = ["public"]',
         },
         note: "Set IGLOO_SOURCE_ORDERS_DB_URI and IGLOO_SOURCE_CRM_URI before startup. The optional tables allowlist filters by table name. Omit it to discover all base tables in the selected schemas.",
       },
@@ -172,8 +177,8 @@ export const docs: Doc[] = [
               "TOML config file path",
               "./igloo.toml if present",
             ],
-            ["IGLOO_PARQUET_PATH", "Local Parquet directory", "Required"],
-            ["IGLOO_CDC_PATH", "JSON event directory", "Required"],
+            ["IGLOO_PARQUET_PATH", "Legacy Parquet directory", "Optional; fixed-schema iceberg table"],
+            ["IGLOO_CDC_PATH", "JSON event directory", "Optional; file-based cache invalidation"],
             [
               "DATABASE_URL",
               "Primary PostgreSQL URI",
@@ -227,14 +232,15 @@ export const docs: Doc[] = [
     title: "Architecture",
     group: "Understand the engine",
     description: "Follow a query through the single-process Rust engine.",
-    source: source("docs/ARCHITECTURE.md"),
+    source: AGENT_SOURCE_URL + "/docs/ARCHITECTURE.md",
+    sourceLabel: "connector preview " + AGENT_SOURCE_COMMIT.slice(0, 7) + " (unreleased)",
     sections: [
       {
         id: "overview",
         title: "A small, composable engine",
         body: [
-          "Igloo is currently one Rust crate with a library and a binary, running in a single process. Apache DataFusion provides SQL planning and execution; Apache Arrow provides in-memory schemas and record batches. PostgreSQL and local Parquet are the implemented data sources.",
-          "The PostgreSQL path uses a custom DataFusion TableProvider backed by tokio-postgres. ADBC is a separate FFI example used by the one-shot demo, rather than the connector underneath DataFusion. Distributed scheduling is future work.",
+          "Igloo is currently one Rust crate with a library and a binary, running in a single process. Apache DataFusion provides SQL planning and execution; Apache Arrow provides in-memory schemas and record batches. The connector preview registers native PostgreSQL, generic ADBC sources and named local Parquet snapshots with inferred schemas.",
+          "Native PostgreSQL uses a custom TableProvider backed by tokio-postgres. Generic ADBC sources now have a separate TableProvider using standard metadata and streamed Arrow batches. The legacy one-shot ADBC example remains separate. All routes share DataFusion; distributed scheduling is future work.",
         ],
       },
       {
@@ -265,6 +271,7 @@ export const docs: Doc[] = [
               "TOML, environment overrides, validation, secret redaction",
             ],
             ["server.rs", "PostgreSQL wire protocol and query handling"],
+            ["adbc_source.rs / connectors.rs", "Generic ADBC metadata/streaming, connector configuration and coverage"],
             [
               "datafusion_engine.rs",
               "SessionContext, table registration, query execution",
@@ -442,7 +449,8 @@ export const docs: Doc[] = [
     group: "Project",
     description:
       "What is implemented, what is evolving, and where to contribute.",
-    source: source("ROADMAP.md"),
+    source: AGENT_SOURCE_URL + "/ROADMAP.md",
+    sourceLabel: "connector preview " + AGENT_SOURCE_COMMIT.slice(0, 7) + " (unreleased)",
     sections: [
       {
         id: "today",
@@ -451,7 +459,7 @@ export const docs: Doc[] = [
           "Igloo v0.1.0 is an experimental single-node engine. The following capabilities are implemented in the source revision used for this website. This summary distinguishes shipped components from complete roadmap phases.",
         ],
         list: [
-          "SQL execution over PostgreSQL and local Parquet through DataFusion",
+          "SQL execution over native PostgreSQL, compatible ADBC sources and local Parquet through DataFusion",
           "Multiple PostgreSQL source catalogs and deterministic table aliases",
           "PostgreSQL simple and extended query protocols",
           "Arrow-native result caching with normalized SQL keys, LRU, and TTL",
@@ -478,7 +486,7 @@ export const docs: Doc[] = [
         id: "interfaces",
         title: "Interfaces & operations",
         body: [
-          "Arrow Flight SQL, additional source connectors, metrics export, authentication, TLS, and production operations are planned. Existing PostgreSQL wire support should not be read as a claim of production readiness.",
+          "Database-specific ADBC certification, real Iceberg catalog/snapshot reads, replication interoperability, JDBC/ODBC or native bridges, metrics, authentication/TLS and production operations are next work. Existing PostgreSQL wire support should not be read as a claim of production readiness.",
         ],
       },
       {

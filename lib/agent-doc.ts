@@ -13,8 +13,8 @@ export const agentDoc: Doc = {
       id: "choose-your-interface",
       title: "One engine, two agent interfaces",
       body: [
-        "Igloo gives developers and agents a SQL interface to existing PostgreSQL databases and a local Parquet table. Use native stdio MCP in compatible coding agents, or JSON commands through a shell/subprocess tool. No LLM provider or API key is required.",
-        "The agent workflow is discover → explain → query. Both interfaces use the same read-only SQL policy, structured errors, exact numeric encodings, and result budgets. The persistent MCP process reuses its source connections; each CLI invocation initializes its own engine.",
+        "Igloo gives developers and agents a SQL interface across native PostgreSQL, compatible ADBC drivers and named local Parquet snapshots. Use native stdio MCP in compatible coding agents, or JSON commands through a shell/subprocess tool. No LLM provider or API key is required. The Database connectors guide distinguishes tested integrations from unverified driver candidates and planned routes.",
+        "The agent workflow is discover → explain → query. Both interfaces use the same read-only SQL policy, structured errors, exact numeric encodings, and result budgets. A persistent MCP process retains its engine and source metadata. Native PostgreSQL shares connections; ADBC opens a connection per scan. Each CLI invocation initializes its own engine.",
       ],
       note: "The agent interface is an experimental source preview on the codex/agent-native-access branch, not a tagged release. The commands below check out the exact reviewed revision. Existing engine documentation remains pinned to its reviewed source revision.",
     },
@@ -56,12 +56,13 @@ export const agentDoc: Doc = {
     },
     {
       id: "tools",
-      title: "Four focused tools",
+      title: "Five focused tools",
       body: ["Discover the schema before generating SQL. Prefer named source catalogs and copy qualified_name verbatim. Default-catalog entries may be aliases. Follow next_cursor using after until it is null."],
       table: {
         headings: ["Tool", "Input", "Purpose"],
         rows: [
           ["igloo_capabilities", "None", "Dialect, budgets, encodings and limitations"],
+          ["igloo_connectors", "None", "Connector routes and evidence-backed coverage"],
           ["igloo_schema", "Optional catalog, after, max_tables", "Paginated tables and typed columns"],
           ["igloo_explain", "sql; optional max_rows, timeout_ms", "Logical plan without executing the query"],
           ["igloo_query", "sql; optional max_rows, timeout_ms", "JSON rows, types, row_count and truncated"],
@@ -84,13 +85,13 @@ export const agentDoc: Doc = {
       id: "existing-sources",
       title: "Connect existing sources",
       body: [
-        "Create an Igloo TOML configuration with absolute parquet_path and cdc_path directories plus named PostgreSQL sources. Set IGLOO_CONFIG to its absolute path and supply connection strings through IGLOO_SOURCE_<NAME>_URI in the client process environment. Remove --demo to use configured data. Keep credentials out of prompts and committed configuration.",
-        "Use a SELECT-only PostgreSQL role and a source-side statement_timeout. The current source connection uses NoTls; use an appropriately secured development connection. The Parquet directory can be empty; the legacy iceberg table expects user_id: Int64 and data: Utf8. Arbitrary Parquet schemas and actual Iceberg tables remain future work. No ADBC driver or listen address is needed for agent commands.",
+        "Create an Igloo TOML configuration with the source family you need. Set IGLOO_CONFIG to its absolute path and supply connection strings through IGLOO_SOURCE_<NAME>_URI in the client process environment. Remove --demo to use configured data. Keep credentials out of prompts and committed configuration. Native PostgreSQL is shown below; the Database connectors guide covers ADBC and named Parquet.",
+        "Use a SELECT-only PostgreSQL role and a source-side statement_timeout. The native source connection uses NoTls; use an appropriately secured development connection. Native PostgreSQL needs no ADBC driver. Generic adbc_sources require a trusted installed driver. Named parquet_sources infer other schemas; only the optional legacy iceberg table retains user_id: Int64 and data: Utf8. Real Iceberg/CDC integration remains planned. Agent mode needs no listen address.",
       ],
       code: {
-        title: "igloo-agent.toml · local directories must exist",
+        title: "igloo-agent.toml · native PostgreSQL",
         language: "toml",
-        code: 'parquet_path = "/absolute/path/to/local_parquet/"\ncdc_path = "/absolute/path/to/local_cdc/"\n\n[[sources]]\nname = "app"\nschemas = ["public"]\ntables = ["customers", "orders"]\n# Supply IGLOO_SOURCE_APP_URI in the process environment.',
+        code: '[[sources]]\nname = "app"\nschemas = ["public"]\ntables = ["customers", "orders"]\n# Supply IGLOO_SOURCE_APP_URI in the process environment.',
       },
     },
     {

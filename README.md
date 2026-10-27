@@ -33,7 +33,7 @@ To use an already-installed Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/
 
 ## Publish to GitHub Pages
 
-The workflow in `.github/workflows/pages.yml` builds and tests every pull request. A push to `main` or a manual run on `main` builds, tests, uploads `out/`, and deploys it using the Pages environment. The deployment then verifies the public homepage, pinned agent guide, `llms.txt`, query skill, and commit identifier in `deployment.json`, retrying while CDN edges update. Pull requests do not deploy.
+The workflow in `.github/workflows/pages.yml` builds and tests every pull request. A push to `main` or a manual run on `main` builds, tests, uploads `out/`, and deploys it using the Pages environment. The deployment then verifies the public homepage, pinned agent and connector guides, `llms.txt`, query skill, and commit identifier in `deployment.json`, retrying while CDN edges update. Pull requests do not deploy.
 
 In the GitHub repository settings, set **Pages → Build and deployment → Source → GitHub Actions**. The workflow needs Pages and OIDC write permissions in its deployment job; it uses no stored deployment token. The generated `.nojekyll`, `404.html`, sitemap, and robots file are included in the export. Keep this organization site's root URL as `https://igloodb.github.io`; a project subpath would require a separate `basePath` configuration.
 
@@ -44,15 +44,16 @@ In the GitHub repository settings, set **Pages → Build and deployment → Sour
 - `lib/site.ts`: illustrative examples, canonical URL, and reviewed engine revision.
 - `lib/docs.ts`: documentation content, source links, and section structure.
 - `lib/agent-doc.ts`: unreleased agent interface onboarding and contract documentation.
+- `lib/connector-doc.ts`: database coverage, driver configuration, evidence, and replication roadmap.
 - `scripts/generate-agent-docs.mjs`: generates Markdown guides, `llms.txt`, `llms-full.txt` and a copyable query skill from the HTML documentation source during `pnpm build`. Run `pnpm docs:generate` before using these assets in development.
 - `pages/docs/[slug].tsx`: statically generated documentation with navigation and table of contents.
 - `components/layout.tsx`: navigation, accessible search dialog, metadata, and footer.
 - `styles/globals.css`: responsive design, reduced-motion, focus, and print rules.
 - `docs/PROJECT_ANALYSIS.md`: source audit and editorial decisions.
 
-Existing engine content is grounded in revision `163320482d98bc3d6c49eb85acb0f511461a8284`; those source links remain pinned for auditability. The agent guide and homepage document the experimental source preview at `cf85d08f435454f4e7a564c5d73ff48c4524b878` on `codex/agent-native-access`, explicitly identified as unreleased. `lib/site.ts` supplies the shared clone/checkout commands and pinned source links so visitors can reproduce the documented behavior. The implementation and market research live in the engine's `src/agent.rs`, `src/mcp.rs`, `src/agent_cli.rs`, and `docs/MARKET_ANALYSIS.md`. Update docs plus search/text content together. When adding a route, update `public/sitemap.xml` and the route coverage list in `tests/website.spec.ts`.
+Existing engine content is grounded in revision `163320482d98bc3d6c49eb85acb0f511461a8284`; those source links remain pinned for auditability. The agent and connector guides, configuration, architecture, roadmap, and homepage document the experimental source preview at `b5a210d54a2e78a9a8c9497e2476061aad771d36` on `codex/agent-native-access`, explicitly identified as unreleased. `lib/site.ts` supplies the shared clone/checkout commands and pinned source links so visitors can reproduce the documented behavior. The implementation and market research live in the engine's `src/agent.rs`, `src/mcp.rs`, `src/agent_cli.rs`, and `docs/MARKET_ANALYSIS.md`. Update docs plus search/text content together. When adding a route, update `public/sitemap.xml` and the route coverage list in `tests/website.spec.ts`.
 
-Current limitations are explicit: single-node experimental runtime, PostgreSQL plus local Parquet, a standalone ADBC path, JSON-file CDC with whole-cache invalidation, no actual Iceberg tables, and unauthenticated plaintext pgwire. Planned features are identified as roadmap work. Walkthrough results are illustrative, without performance claims.
+Current limitations are explicit: single-node experimental runtime, native PostgreSQL, generic ADBC drivers with PostgreSQL/SQLite 1.7.0 integration coverage, inferred-schema local Parquet, JSON-file CDC with whole-cache invalidation, no actual Iceberg tables, and unauthenticated plaintext pgwire. Other drivers require certification; JDBC/ODBC bridges and replication are roadmap work. The connector guide cites OLake, Columnar, and Apache Arrow primary sources and distinguishes live queries from replication. Walkthrough results are illustrative, without performance claims.
 
 ## License
 
