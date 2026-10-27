@@ -18,6 +18,7 @@ async function expectAccessible(page: Page) {
 const slugs = [
   "quickstart",
   "agents",
+  "connectors",
   "postgres",
   "configuration",
   "architecture",
@@ -96,6 +97,9 @@ test("documentation search finds content, handles empty results, and closes acce
   await input.fill("no-such-igloo-page");
   await expect(dialog).toContainText("No matching pages");
   await input.fill("cache");
+  await input.fill("Snowflake");
+  await expect(dialog.getByRole("link", { name: "Database connectors" })).toBeVisible();
+  await input.fill("cache");
   await expectAccessible(page);
   await dialog.getByRole("link", { name: "Caching & freshness" }).click();
   await expect(page).toHaveURL(/\/docs\/caching\/$/);
@@ -115,7 +119,7 @@ for (const slug of slugs) {
       const response = await page.goto("/docs/" + slug + "/");
       expect(response?.status()).toBe(200);
       await expect(page.locator("h1")).toBeVisible();
-      await expect(page.locator(".doc-provenance")).toContainText(slug === "agents" ? "unreleased" : "1633204");
+      await expect(page.locator(".doc-provenance")).toContainText(["agents", "connectors", "postgres", "configuration", "architecture", "roadmap"].includes(slug) ? "unreleased" : "1633204");
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -148,6 +152,7 @@ test("agents can discover the same documentation and skill without rendering Jav
   const index = await request.get("/llms.txt");
   expect(index.ok()).toBe(true);
   expect(await index.text()).toContain("https://igloodb.github.io/docs/agents.md");
+  expect(await index.text()).toContain("https://igloodb.github.io/docs/connectors.md");
   const guide = await request.get("/docs/agents.md");
   expect(guide.ok()).toBe(true);
   const text = await guide.text();

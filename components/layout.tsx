@@ -25,7 +25,7 @@ export function SearchDialog() {
       " " +
       doc.description +
       " " +
-      doc.sections.map((s) => s.title + " " + s.body.join(" ")).join(" ")
+      doc.sections.map((s) => [s.title, ...s.body, ...(s.list || []), ...(s.table?.rows.flat() || []), s.code?.code || "", ...(s.links?.map((link) => link.label) || [])].join(" ")).join(" ")
     )
       .toLowerCase()
       .includes(query.toLowerCase().trim()),
@@ -144,6 +144,7 @@ function Header() {
         </Link>
         <nav className="desktop-nav" aria-label="Main navigation">
           <Link href="/#features">Why Igloo</Link>
+          <Link href="/docs/connectors/">Connectors</Link>
           <Link href="/docs/agents/">For AI agents</Link>
           <Link
             href="/docs/quickstart/"
@@ -183,6 +184,7 @@ function Header() {
             aria-label="Mobile navigation"
           >
             <Link href="/#features">Why Igloo</Link>
+            <Link href="/docs/connectors/">Connectors</Link>
             <Link href="/#how-it-works">How it works</Link>
             <Link href="/docs/agents/">For AI agents</Link>
             <Link href="/docs/quickstart/">Documentation</Link>
@@ -224,6 +226,7 @@ function Footer() {
             <h3>Build</h3>
             <Link href="/docs/quickstart/">Quickstart</Link>
             <Link href="/docs/agents/">Agent guide</Link>
+            <Link href="/docs/connectors/">Database connectors</Link>
             <Link href="/docs/configuration/">Configuration</Link>
             <Link href="/docs/sql/">SQL reference</Link>
           </div>
@@ -267,7 +270,7 @@ export function Layout({
     : "Igloo — SQL context for developers and AI agents.";
   const summary =
     description ||
-    "Give your AI agent one SQL interface to PostgreSQL and Parquet. Native MCP, a read-only JSON CLI, typed schema discovery, and query plans. Experimental, open source, built in Rust.";
+    "One SQL interface across your databases. Native PostgreSQL, compatible ADBC drivers, and Parquet snapshots for AI agents and developers. MCP, JSON, and typed discovery. Experimental and open source.";
   return (
     <>
       <Head>

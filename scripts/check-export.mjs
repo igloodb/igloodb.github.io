@@ -73,6 +73,7 @@ for (const required of [
   "deployment.json",
   "llms-full.txt",
   "docs/agents.md",
+  "docs/connectors.md",
   "skills/igloo-query/SKILL.md",
 ]) {
   try {

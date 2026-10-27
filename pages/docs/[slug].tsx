@@ -100,6 +100,7 @@ export default function Documentation({ doc }: { doc: Doc }) {
                   ))}
                 </ul>
               )}
+              {section.links && <ul>{section.links.map((link) => <li key={link.href}><a href={link.href}>{link.label}</a></li>)}</ul>}
               {section.code && <CodeBlock {...section.code} />}
               {section.table && (
                 <div

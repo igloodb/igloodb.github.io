@@ -3,7 +3,7 @@ export function EngineIllustration() {
     <div
       className="engine-illustration"
       role="img"
-      aria-label="Developers and AI agents use MCP or JSON to query Igloo. DataFusion joins PostgreSQL and Parquet. Agent results are read-only, bounded JSON."
+      aria-label="Developers and AI agents use MCP or JSON to query Igloo. DataFusion joins native and compatible ADBC databases with Parquet snapshots. Agent results are read-only, bounded JSON."
     >
       <svg viewBox="0 0 560 455" fill="none" aria-hidden="true">
         <defs>
@@ -147,10 +147,10 @@ export function EngineIllustration() {
             strokeWidth="1.5"
           />
           <text x="98" y="375" fill="#284431" fontSize="13" fontWeight="600">
-            PostgreSQL
+            Databases
           </text>
           <text x="98" y="392" fill="#64796c" fontSize="10.5">
-            live source catalogs
+            native + ADBC
           </text>
         </g>
         <g filter="url(#shadow)">
@@ -173,7 +173,7 @@ export function EngineIllustration() {
             Parquet
           </text>
           <text x="389" y="392" fill="#64796c" fontSize="10.5">
-            local columnar files
+            inferred snapshots
           </text>
         </g>
         <path
