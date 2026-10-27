@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://igloodb.github.io/sitemap.xml
