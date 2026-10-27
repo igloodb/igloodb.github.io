@@ -35,12 +35,12 @@ test("homepage explains the implemented engine, loads cleanly, and meets accessi
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Your data.Ready for agents.",
+    "All your data.One SQL engine.",
   );
   await expect(page.getByText("Experimental, by design")).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Connect your agent" }),
-  ).toHaveAttribute("href", "/docs/agents/");
+    page.getByRole("link", { name: "Start building" }),
+  ).toHaveAttribute("href", "/docs/quickstart/");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,

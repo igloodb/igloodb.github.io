@@ -4,6 +4,8 @@ This is a static Next.js Pages Router site, not the database runtime. Read
 `README.md` for development and publishing. The paired engine source is in
 `../igloodb` when available.
 
+- Preserve the original SQL/data-federation product page and voice. Add new
+  features incrementally; avoid rewriting the whole page around AI agents.
 - Edit homepage content in `pages/index.tsx`, shared navigation/metadata in
   `components/layout.tsx`, and styles in `styles/globals.css`.
 - `lib/docs.ts` holds documentation; `lib/agent-doc.ts` holds the unreleased agent

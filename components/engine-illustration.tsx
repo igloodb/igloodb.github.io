@@ -3,7 +3,7 @@ export function EngineIllustration() {
     <div
       className="engine-illustration"
       role="img"
-      aria-label="Developers and AI agents use MCP or JSON to query Igloo. DataFusion joins native and compatible ADBC databases with Parquet snapshots. Agent results are read-only, bounded JSON."
+      aria-label="SQL clients send queries to Igloo. DataFusion joins PostgreSQL and Parquet, with Arrow results stored in an in-memory cache."
     >
       <svg viewBox="0 0 560 455" fill="none" aria-hidden="true">
         <defs>
@@ -78,7 +78,7 @@ export function EngineIllustration() {
             fontSize="13"
             fontFamily="monospace"
           >
-            agents + developers
+            your SQL client
           </text>
         </g>
         <rect x="188" y="137" width="184" height="171" rx="12" fill="#d3decf" />
@@ -147,10 +147,10 @@ export function EngineIllustration() {
             strokeWidth="1.5"
           />
           <text x="98" y="375" fill="#284431" fontSize="13" fontWeight="600">
-            Databases
+            PostgreSQL
           </text>
           <text x="98" y="392" fill="#64796c" fontSize="10.5">
-            native + ADBC
+            live source catalogs
           </text>
         </g>
         <g filter="url(#shadow)">
@@ -173,7 +173,7 @@ export function EngineIllustration() {
             Parquet
           </text>
           <text x="389" y="392" fill="#64796c" fontSize="10.5">
-            inferred snapshots
+            local columnar files
           </text>
         </g>
         <path
@@ -193,7 +193,7 @@ export function EngineIllustration() {
         />
         <circle cx="424" cy="185" r="3" fill="#52864b" />
         <text x="435" y="189" fill="#32503c" fontSize="10" fontWeight="600">
-          Agent results
+          Arrow cache
         </text>
         <text
           x="422"
@@ -202,7 +202,7 @@ export function EngineIllustration() {
           fontSize="9.5"
           fontFamily="monospace"
         >
-          read-only JSON
+          LRU + TTL
         </text>
         <rect
           x="28"
@@ -244,7 +244,7 @@ export function EngineIllustration() {
           letterSpacing="1.6"
           fontFamily="monospace"
         >
-          DISCOVER. EXPLAIN. QUERY.
+          ONE ENGINE. A CONNECTED PICTURE.
         </text>
       </svg>
     </div>
